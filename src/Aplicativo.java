@@ -52,7 +52,6 @@ public class Aplicativo {
         inicializarTabelaContatos();
         carregarClientes();
     
-        // Adicionando o menu de contexto à lista de clientes
         JPopupMenu menuContexto = new JPopupMenu();
         JMenuItem menuItemVerDetalhes = new JMenuItem("Ver Detalhes");
         JMenuItem menuItemExcluirCliente = new JMenuItem("Excluir Cliente");
@@ -68,19 +67,50 @@ public class Aplicativo {
         painelSuperior.add(btnCadastrarCliente);
         painelSuperior.add(btnAdicionarContato);
     
-        // Cria um JLabel para o rodapé
         JLabel lblRodape = new JLabel("app desenvolvido por Bruno Bahri", SwingConstants.CENTER);
-        lblRodape.setFont(new Font("Dialog", Font.ITALIC, 12)); // Define a fonte e o tamanho do texto do rodapé
-        lblRodape.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Adiciona um pouco de espaço ao redor do rótulo
+        lblRodape.setFont(new Font("Dialog", Font.ITALIC, 12));
+        lblRodape.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
-        // Cria um painel para o rodapé que também contém a tabela de contatos
         JPanel painelRodape = new JPanel(new BorderLayout());
-        painelRodape.add(lblRodape, BorderLayout.SOUTH); // Adiciona o rótulo do rodapé ao painel
+        painelRodape.add(lblRodape, BorderLayout.SOUTH);
         painelRodape.add(new JScrollPane(tabelaContatos), BorderLayout.CENTER);
     
         frame.add(painelSuperior, BorderLayout.NORTH);
         frame.add(new JScrollPane(listaClientes), BorderLayout.CENTER);
         frame.add(painelRodape, BorderLayout.SOUTH);
+    
+        btnCadastrarCliente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nome = JOptionPane.showInputDialog(frame, "Nome do Cliente:");
+                if (nome != null && !nome.trim().isEmpty()) {
+                    Cliente novoCliente = new Cliente(nome);
+                    clientes.add(novoCliente);
+                    atualizarListaClientes();
+                    salvarClientes();
+                }
+            }
+        });
+    
+        btnAdicionarContato.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cliente clienteSelecionado = listaClientes.getSelectedValue();
+                if (clienteSelecionado != null) {
+                    String nomeContato = JOptionPane.showInputDialog(frame, "Nome do Contato:");
+                    String emailContato = JOptionPane.showInputDialog(frame, "Email do Contato:");
+                    String telefoneContato = JOptionPane.showInputDialog(frame, "Telefone do Contato:");
+                    if (nomeContato != null && !nomeContato.trim().isEmpty()) {
+                        Contato novoContato = new Contato(nomeContato, emailContato, telefoneContato);
+                        clienteSelecionado.adicionarContato(novoContato);
+                        atualizarTabelaContatos(clienteSelecionado);
+                        salvarClientes();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Por favor, selecione um cliente primeiro.", "Nenhum cliente selecionado", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
     
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -94,6 +124,7 @@ public class Aplicativo {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+    
     
     private static void mostrarDetalhesCliente() {
         Cliente clienteSelecionado = listaClientes.getSelectedValue();
