@@ -30,7 +30,7 @@ public class Aplicativo {
     }
 
     private static void criarEExibirGUI() {
-        JFrame frame = new JFrame("Cadastro de clientes Qualitermo");
+        JFrame frame = new JFrame("Cadastro de clientes");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
